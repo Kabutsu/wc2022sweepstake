@@ -16,11 +16,22 @@ app.get('/api', (req, res) => {
   res.send({ message: 'Hello World! My name is Sam!' });
 });
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
+io.on('connection', async (socket) => {
+  console.log(`User ${socket.id} connected`);
+
+  const room1 = io.in('room1');
+  const currentMembers = await room1.allSockets();
+  
+  if (!currentMembers.size) {
+    console.log(`No members currently in room1. User ${socket.id} to be made leader.`);
+
+    io.emit('leader');
+  }
+
+  socket.join('room1');
 
   socket.on('ping', () => {
-    io.emit('pong');
+    room1.emit('pong');
   });
 });
 

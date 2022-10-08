@@ -27,10 +27,15 @@ const Home = () => {
       setLastPong(new Date().toISOString());
     });
 
+    socket.on('leader', () => {
+      alert('You are the leader!');
+    });
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('pong');
+      socket.off('leader');
     };
   }, []);
 
