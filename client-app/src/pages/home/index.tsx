@@ -5,8 +5,17 @@ const socket = io('http://localhost:3001');
 
 const Home = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [lastPong, setLastPong] = useState(null);
   const [message, setMessage] = useState('No message set');
+
+  const [name, setName] = useState('');
+  const [users, setUsers] = useState<Array<string>>([]);
+
+  const addUser = (name: string) => {
+    setUsers(oldUsers => {
+      oldUsers.push(name);
+      return oldUsers;
+    });
+  };
 
   const getData = () => {
     fetch('/api')
@@ -23,12 +32,13 @@ const Home = () => {
       setIsConnected(false);
     });
 
-    socket.on('pong', () => {
-      setLastPong(new Date().toISOString());
+    socket.on('leader', () => {
+      setUsers(['LEADER', ...users]);
     });
 
-    socket.on('leader', () => {
-      alert('You are the leader!');
+    socket.on('joined', (name: string) => {
+      console.log(`${name} joined`);
+      addUser(name);
     });
 
     return () => {
@@ -39,9 +49,14 @@ const Home = () => {
     };
   }, []);
 
-  const sendPing = () => {
-    socket.emit('ping');
-  }
+  const sendJoinRequest = () => {
+    if (!!name) {
+      socket.emit('join', name);
+      setName('');
+    } else {
+      alert('Name cannot be empty');
+    }
+  };
 
   return (
     <div className="App">
@@ -61,8 +76,15 @@ const Home = () => {
         <p>{message}</p>
         <br />
         <p>{`${isConnected ? 'Connected to' : 'Disconnected from'} websocket server`}</p>
-        <button onClick={sendPing}>Ping</button>
-        <p>{lastPong || '-'}</p>
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+        <button onClick={sendJoinRequest}>Join</button>
+        {users.length && (
+          <ul>
+            {users.map(user => (
+              <li>{user}</li>
+            ))}
+          </ul>
+        )}
       </header>
     </div>
   );

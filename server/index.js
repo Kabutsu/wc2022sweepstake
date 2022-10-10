@@ -11,6 +11,7 @@ const io = new Server(server, {
 });
 
 const port = 3001;
+const room = 'staging';
 
 app.get('/api', (req, res) => {
   res.send({ message: 'Hello World! My name is Sam!' });
@@ -19,19 +20,20 @@ app.get('/api', (req, res) => {
 io.on('connection', async (socket) => {
   console.log(`User ${socket.id} connected`);
 
-  const room1 = io.in('room1');
-  const currentMembers = await room1.allSockets();
+  const hub = io.in(room);
+  const currentMembers = await hub.allSockets();
   
   if (!currentMembers.size) {
-    console.log(`No members currently in room1. User ${socket.id} to be made leader.`);
-
+    console.log(`No members currently in staging. User ${socket.id} to be made leader.`);
     io.emit('leader');
   }
 
-  socket.join('room1');
+  socket.join(room);
 
-  socket.on('ping', () => {
-    room1.emit('pong');
+  socket.on('join', (name) => {
+    // save to DB
+    // emit 'joined' event to subscribers
+    hub.emit('joined', name);
   });
 });
 
