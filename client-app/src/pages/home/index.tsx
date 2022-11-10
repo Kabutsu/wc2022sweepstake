@@ -9,6 +9,7 @@ const Home = () => {
 
   const [name, setName] = useState('');
   const [users, setUsers] = useState<Array<string>>([]);
+  const [isLeader, setIsLeader] = useState(false);
 
   const addUser = (name: string) => {
     setUsers(oldUsers => {
@@ -33,12 +34,13 @@ const Home = () => {
     });
 
     socket.on('leader', () => {
-      setUsers(['LEADER', ...users]);
+      setIsLeader(true);
     });
 
-    socket.on('joined', (name: string) => {
+    socket.on('joined', (name: string, usersOnServer: any[]) => {
       console.log(`${name} joined`);
-      addUser(name);
+      console.log(usersOnServer);
+      setUsers(usersOnServer);
     });
 
     return () => {
@@ -76,6 +78,9 @@ const Home = () => {
         <p>{message}</p>
         <br />
         <p>{`${isConnected ? 'Connected to' : 'Disconnected from'} websocket server`}</p>
+        {isLeader && (
+          <p>You are the leader!</p>
+        )}
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
         <button onClick={sendJoinRequest}>Join</button>
         {users.length && (

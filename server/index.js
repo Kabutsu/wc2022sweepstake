@@ -1,6 +1,10 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import { Low, MemorySync } from 'lowdb';
+
+const adapter = new MemorySync();
+const db = new Low(adapter);
 
 const app = express();
 const server = http.createServer(app);
@@ -12,6 +16,8 @@ const io = new Server(server, {
 
 const port = 3001;
 const room = 'staging';
+
+db.data ||= { members: [] };
 
 app.get('/api', (req, res) => {
   res.send({ message: 'Hello World! My name is Sam!' });
@@ -31,9 +37,8 @@ io.on('connection', async (socket) => {
   socket.join(room);
 
   socket.on('join', (name) => {
-    // save to DB
-    // emit 'joined' event to subscribers
-    hub.emit('joined', name);
+    db.data.members.push(name);
+    hub.emit('joined', name, db.data.members);
   });
 });
 
