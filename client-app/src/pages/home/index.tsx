@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
+type TUser = {
+  id: string;
+  name: string;
+}
+
 const socket = io('http://localhost:3001');
 
 const Home = () => {
@@ -9,14 +14,8 @@ const Home = () => {
 
   const [name, setName] = useState('');
   const [users, setUsers] = useState<Array<string>>([]);
+  const [userId, setUserId] = useState<string>();
   const [isLeader, setIsLeader] = useState(false);
-
-  const addUser = (name: string) => {
-    setUsers(oldUsers => {
-      oldUsers.push(name);
-      return oldUsers;
-    });
-  };
 
   const getData = () => {
     fetch('/api')
@@ -33,20 +32,24 @@ const Home = () => {
       setIsConnected(false);
     });
 
-    socket.on('leader', () => {
-      setIsLeader(true);
+    socket.on('leader', (id?: string) => {
+      setIsLeader(!id || id === userId);
     });
 
-    socket.on('joined', (name: string, usersOnServer: any[]) => {
-      console.log(`${name} joined`);
-      console.log(usersOnServer);
-      setUsers(usersOnServer);
+    socket.on('loaded', (usersOnServer: Array<TUser>) => {
+      setUsers(usersOnServer.map(({ name }) => name));
+    });
+
+    socket.on('joined', (id: string, usersOnServer: Array<TUser>) => {
+      setUsers(usersOnServer.map(({ name }) => name));
+      setUserId(id);
     });
 
     return () => {
       socket.off('connect');
       socket.off('disconnect');
-      socket.off('pong');
+      // socket.off('loaded');
+      // socket.off('joined');
       socket.off('leader');
     };
   }, []);
