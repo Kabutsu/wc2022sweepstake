@@ -40,9 +40,9 @@ const Home = () => {
       setUsers(usersOnServer.map(({ name }) => name));
     });
 
-    socket.on('joined', (id: string, usersOnServer: Array<TUser>) => {
+    socket.on('joined', (usersOnServer: Array<TUser>) => {
       setUsers(usersOnServer.map(({ name }) => name));
-      setUserId(id);
+      //setUserId(id);
     });
 
     return () => {
