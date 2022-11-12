@@ -3,17 +3,14 @@ import io from 'socket.io-client';
 
 import PlayerInfo, { TDrawData, TPlayerData } from '../player-info';
 
+import { TUser } from '../../types/web-server';
+
 import './home.scss';
 
 enum Stage {
   Info,
   Draw,
 };
-
-type TUser = {
-  id: string;
-  name: string;
-}
 
 type TProps = {};
 
@@ -93,13 +90,9 @@ const Home = ({}: TProps) => {
     }
   };
 
-  const renderStage = () => (
-    <PlayerInfo setPlayerData={(data: TDrawData) => setDrawData(data)} />
-  );
-
   return (
     <div className="p-home">
-      <PlayerInfo setPlayerData={(data: TDrawData) => setDrawData(data)} />
+      <PlayerInfo socket={socket} isLeader={isLeader} setPlayerData={(data: TDrawData) => setDrawData(data)} />
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import { useForm } from 'react-hook-form';
+import { Socket } from 'socket.io-client';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { TPlayerData } from 'src/pages/player-info';
 
 import { TDefaultObject } from 'src/types/general';
@@ -9,6 +11,7 @@ import './player-form.scss';
 
 type IProps = {
     onSubmit: (playerNames: Array<TPlayerData>) => void;
+    socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 };
 
 const MAX_PLAYERS: number = 24;
@@ -31,35 +34,35 @@ const showRow = (index: number, values: TDefaultObject) => {
     return show;
 }
 
-const PlayerForm = ({ onSubmit }: IProps) => {
+const PlayerForm = ({ socket, onSubmit }: IProps) => {
     const initialValues = generatePlayers();
 
-    const { control, handleSubmit, register, reset, watch } = useForm<TDefaultObject>({ mode: 'all', defaultValues: initialValues});
-    const values = watch();
+    const { control, handleSubmit, register, reset, watch } = useForm<TDefaultObject>({ mode: 'all' });
+    //const values = watch();
+
+    const sendJoinRequest = (values: TDefaultObject) => {
+        if (!!values['name']) {
+          socket.emit('join', values['name']);
+        } else {
+          alert('Name cannot be empty');
+        }
+      };
 
     const submitForm = (values: TDefaultObject) => onSubmit(Object.values(values).filter((x, index) => !!x && showRow(index + 1, values)).map((playerName, index) => ({ playerName, playerId: index })));
 
     return (
         <form
             className="c-player-form"
-            onSubmit={handleSubmit(submitForm)}
+            onSubmit={handleSubmit(sendJoinRequest)}
         >
             <div className="c-player-form__players">
-                {Object.keys(initialValues).map((key: string) => {
-                    const playerId = parseInt(key.split('_')[1]);
-
-                    return showRow(playerId + 1, values) && (
-                        <div className="c-player-form__players-input">
-                            <InputText
-                                control={control}
-                                key={`${key}_field`}
-                                label={`Person ${playerId + 1}`}
-                                placeholder="Enter Name"
-                                {...register(key)}
-                            />
-                        </div>
-                    );
-                })}
+                <div className="c-player-form__players-input">
+                    <InputText
+                        control={control}
+                        placeholder="Enter Name"
+                        {...register('name')}
+                    />
+                </div>
             </div>
             
             <Button
