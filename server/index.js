@@ -24,21 +24,40 @@ app.get('/api', (req, res) => {
 });
 
 io.on('connection', async (socket) => {
-  console.log(`User ${socket.id} connected`);
-
-  const hub = io.in(room);
-  const currentMembers = await hub.allSockets();
-  
-  if (!currentMembers.size) {
-    console.log(`No members currently in staging. User ${socket.id} to be made leader.`);
-    io.emit('leader');
-  }
-
   socket.join(room);
+  socket.emit('loaded', db.data.members);
 
   socket.on('join', (name) => {
-    db.data.members.push(name);
-    hub.emit('joined', name, db.data.members);
+    socket.join(room);
+    
+    if (!db.data.members.length) {
+      socket.emit('makeLeader');
+    }
+
+    db.data.members.push({ id: socket.id, name });
+
+    socket.emit('joined', socket.id);
+    io.emit('loaded', db.data.members);
+  });
+
+  socket.on('checkLeader', (leaderId) => {
+    if (socket.id === leaderId) {
+      socket.emit('makeLeader');
+    }
+  });
+
+  socket.on('disconnect', (reason) => {
+    const userIndex = db.data.members.findIndex(x => x.id === socket.id);
+
+    if (userIndex >= 0) {
+      db.data.members.splice(userIndex, 1);
+    }
+
+    io.emit('loaded', db.data.members);
+
+    if (db.data.members.length) {
+      io.in(room).emit('askLeader', db.data.members[0].id);
+    }
   });
 });
 
