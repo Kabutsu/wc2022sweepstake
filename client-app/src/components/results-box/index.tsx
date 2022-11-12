@@ -12,7 +12,7 @@ type IProps = {
 
 const ResultsBox = ({ result, animationStartDelay, animationWaitDelay }: IProps) => (
     <div className="c-results-box">
-        <div className="c-results-box__title">{result.playerData.playerName}</div>
+        <div className="c-results-box__title">{result.playerData.name}</div>
         <div className="c-results-box__countries">
             {result.countries.sort((a, b) => b.id - a.id).map((country, index) => (
                 <CountryImage countryName={country.name} timeout={animationStartDelay + (animationWaitDelay * index)} />

@@ -2,9 +2,10 @@
 
 .c-player-form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    gap: 24px;
 }
 
 .c-player-form__players {
@@ -18,7 +19,7 @@
         flex-direction: column;
         text-align: left;
 
-        & label {
+        & label, & span {
             font-weight: 500;
             font-size: 20px;
             margin-bottom: 5px;
@@ -45,5 +46,4 @@
 button.c-player-form__submit {
     display: flex;
     margin-left: auto;
-    margin-top: 20px;
 }

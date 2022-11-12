@@ -17,4 +17,16 @@
         background-color: $blue;
         color: $white;
     }
+
+    &:disabled {
+        border-color: $dark-gray;
+        background: $gray;
+        color: $like-white;
+        transition: none;
+        cursor:auto;
+    }
+}
+
+.c-button.is-disabled {
+
 }

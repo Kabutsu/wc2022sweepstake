@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import io from 'socket.io-client';
 
-import PlayerInfo, { TDrawData, TPlayerData } from '../player-info';
+import PlayerInfo, { TDrawData } from '../player-info';
 
 import { TUser } from '../../types/web-server';
 
@@ -18,10 +18,9 @@ const socket = io('http://localhost:3001');
 
 const Home = ({}: TProps) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [message, setMessage] = useState('No message set');
 
   const [name, setName] = useState('');
-  const [users, setUsers] = useState<Array<string>>([]);
+  const [users, setUsers] = useState<Array<TUser>>([]);
   const [userId, setUserId] = useState('');
   const [isLeader, setIsLeader] = useState(false);
 
@@ -33,18 +32,6 @@ const Home = ({}: TProps) => {
       setCurrentStage(Stage.Draw);
     }
   }, [drawData]);
-
-  const getData = () => {
-    fetch('/api')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message));
-  };
-
-  const updateLeader = useCallback((id?: string) => {
-    console.log(`id:= ${id}`);
-    console.log(`userId:= ${userId}`);
-    setIsLeader(!id || id === userId);
-  }, [userId]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -64,7 +51,7 @@ const Home = ({}: TProps) => {
     });
 
     socket.on('loaded', (usersOnServer: Array<TUser>) => {
-      setUsers(usersOnServer.map(({ name }) => name));
+      setUsers(usersOnServer);
     });
 
     socket.on('joined', (id: string) => {
@@ -81,18 +68,19 @@ const Home = ({}: TProps) => {
     };
   }, []);
 
-  const sendJoinRequest = () => {
-    if (!!name) {
-      socket.emit('join', name);
-      setName('');
-    } else {
-      alert('Name cannot be empty');
-    }
-  };
+  const submitDrawData = (data: TDrawData) => {
+    setDrawData(data);
+  }
 
   return (
     <div className="p-home">
-      <PlayerInfo socket={socket} isLeader={isLeader} setPlayerData={(data: TDrawData) => setDrawData(data)} />
+      <PlayerInfo
+        socket={socket}
+        connected={!!userId}
+        isLeader={isLeader}
+        players={users}
+        setPlayerData={submitDrawData}
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { TPlayerData } from "src/pages/player-info";
+import { TUser } from "./web-server";
 
 export type TDefaultObject = {
     [param: string]: any;
@@ -21,7 +21,7 @@ export type TCountry = {
 }
 
 export type TPlayerDraw = {
-    playerData: TPlayerData;
+    playerData: TUser;
     countries: Array<TCountry>;
 }
 
