@@ -7,7 +7,7 @@ export const countries: Array<TCountry> = [
     { id: 30, name: 'Qatar', group: Group.A, groupSeed: 4, },
     
     { id: 5, name: 'England', group: Group.B, groupSeed: 1, },
-    { id: 15, name: 'United States of America', group: Group.B, groupSeed: 2, },
+    { id: 15, name: 'USA', group: Group.B, groupSeed: 2, },
     { id: 17, name: 'Wales', group: Group.B, groupSeed: 3, },
     { id: 18, name: 'Iran', group: Group.B, groupSeed: 4, },
     
