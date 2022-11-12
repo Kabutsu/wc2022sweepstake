@@ -10,7 +10,9 @@ export enum Group {
     C,
     D,
     E,
-    F
+    F,
+    G,
+    H
 };
 
 export type TCountry = {
