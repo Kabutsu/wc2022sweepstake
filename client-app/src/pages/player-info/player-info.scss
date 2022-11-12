@@ -1,0 +1,42 @@
+@import '../../styles/base.scss';
+
+.p-player-info__section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    & > :not(span) {
+        padding-left: 10px;
+    }
+
+    & > * {
+        margin-bottom: 15px;
+    }
+}
+
+.p-player-info__input {
+    display: flex;
+    flex-direction: column;
+
+    &-balance {
+        gap: 7.5px;
+        margin-top: 10px;
+        margin-left: 7.5px;
+    }
+
+    &-tooltip {
+        position: absolute;
+    }
+}
+
+.p-player-info__balance {
+    display: flex;
+    margin: 5px 0;
+
+    &-label {
+        margin: auto 0 auto 24px;
+        text-align: left;
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,50 @@
+@import '../../styles/base.scss';
+
+.c-player-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.c-player-form__players {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    &-input {
+        display: flex;
+        flex-basis: calc(25% - 40px);
+        flex-direction: column;
+        text-align: left;
+
+        & label {
+            font-weight: 500;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        & input {
+            height: 24px;
+            padding: 6px 8px 4px 16px;
+            margin: 6px 0;
+            border: 2px solid $nice;
+            border-radius: 20px;
+            background: $white;
+            color: $dark-1;
+            font-size: 18px;
+
+            &:focus {
+                border-color: $blue;
+                outline: none;
+            }
+        }
+    }
+}
+
+button.c-player-form__submit {
+    display: flex;
+    margin-left: auto;
+    margin-right: 30px;
+    margin-top: 20px;
+}

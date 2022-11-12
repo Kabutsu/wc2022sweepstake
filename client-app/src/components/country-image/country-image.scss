@@ -1,0 +1,30 @@
+@import '../../styles/base.scss';
+
+.c-country-image {
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+    opacity: 0;
+    transition: opacity 1.5s;
+
+    & > img {
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        border: 1px solid $dark-2;
+    }
+
+    & > span {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    &.is-visible {
+        opacity: 1;
+    }
+}

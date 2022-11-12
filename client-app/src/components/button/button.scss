@@ -1,0 +1,20 @@
+@import '../../styles/base.scss';
+
+.c-button {
+    display: inline-block;
+    border-radius: 50px;
+    border: 2px solid $blue;
+    background: $white;
+    color: $dark-1;
+    padding: 9px 32px;
+    font-size: 17px;
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color ease .3s, color ease .3s;
+
+    &:hover, &:focus {
+        background-color: $blue;
+        color: $white;
+    }
+}

@@ -1,0 +1,32 @@
+@import '../../styles/base.scss';
+
+.c-results-box {
+    display: flex;
+    width: calc(33% - 40px);
+    background: $like-white;
+    color: $dark-2;
+    flex-direction: column;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 25px;
+    transition: box-shadow .2s;
+
+    &:hover {
+        box-shadow: 0 4px 8px 0 rgba(45, 92, 138, 0.3), 0 6px 20px 0 rgba(45, 92, 138, 0.29);
+    }
+}
+
+.c-results-box__title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    color: $black;
+    margin-top: 5px;
+}
+
+.c-results-box__countries {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+}

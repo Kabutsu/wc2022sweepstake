@@ -1,0 +1,54 @@
+@import '../../styles/base.scss';
+
+.c-tooltip {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin: 0 6px;
+    border-radius: 50%;
+    background: $blue;
+    color: $white;
+    font-size: 12px;
+    line-height: 12px;
+    cursor: pointer;
+
+    &:hover {
+        .c-tooltip__label {
+            z-index: 99;
+            transition: opacity .3s;
+            opacity: 1;
+        }
+    }
+}
+
+.c-tooltip__label {
+    position: absolute;
+    z-index: -100;
+    bottom: calc(100% + 12px);
+    padding: 8px 12px;
+    transition: z-index .3s step-start .3s, opacity .3s;
+    border-radius: 4px;
+    opacity: 0;
+    background: $blue;
+    color: $white;
+    line-height: 1.4em;
+    pointer-events: none;
+    width: 250px;
+    white-space: break-spaces;
+    font-weight: bold;
+    text-align: left;
+
+    &:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: calc(50% - 4px);
+        width: 10px;
+        height: 10px;
+        transform: rotate(45deg);
+        background: inherit;
+    }
+}
