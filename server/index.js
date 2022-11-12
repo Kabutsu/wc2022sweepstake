@@ -46,6 +46,10 @@ io.on('connection', async (socket) => {
     }
   });
 
+  socket.on('drawTeams', (drawData) => {
+    socket.to(room).emit('teamsDrawn', drawData);
+  });
+
   socket.on('disconnect', (reason) => {
     const userIndex = db.data.members.findIndex(x => x.id === socket.id);
 

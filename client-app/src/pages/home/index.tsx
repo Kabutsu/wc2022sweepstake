@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
+import { TUser } from '../../types/web-server';
 import PlayerInfo, { TDrawData } from '../player-info';
 
-import { TUser } from '../../types/web-server';
+import { drawTeams } from 'src/services/draw-logic';
 
 import './home.scss';
+import { TPlayerDraw } from 'src/types/general';
+import TeamDraw from '../team-draw';
 
 enum Stage {
   Info,
@@ -25,13 +28,7 @@ const Home = ({}: TProps) => {
   const [isLeader, setIsLeader] = useState(false);
 
   const [currentStage, setCurrentStage] = useState<Stage>(Stage.Info);
-  const [drawData, setDrawData] = useState<TDrawData>(null);
-
-  useEffect(() => {
-    if (drawData?.playerData.length) {
-      setCurrentStage(Stage.Draw);
-    }
-  }, [drawData]);
+  const [drawData, setDrawData] = useState<Array<TPlayerDraw>>(null);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -58,6 +55,10 @@ const Home = ({}: TProps) => {
       setUserId(id);
     });
 
+    socket.on('teamsDrawn', (data: Array<TPlayerDraw>) => {
+      setDrawData(data);
+    });
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -69,18 +70,25 @@ const Home = ({}: TProps) => {
   }, []);
 
   const submitDrawData = (data: TDrawData) => {
-    setDrawData(data);
+    const teamDraw = drawTeams(data);
+    setDrawData(teamDraw);
+
+    socket.emit('drawTeams', teamDraw);
   }
 
   return (
     <div className="p-home">
-      <PlayerInfo
-        socket={socket}
-        connected={!!userId}
-        isLeader={isLeader}
-        players={users}
-        setPlayerData={submitDrawData}
-      />
+      {!drawData ? (
+        <PlayerInfo
+          socket={socket}
+          connected={!!userId}
+          isLeader={isLeader}
+          players={users}
+          setPlayerData={submitDrawData}
+        />
+      ) : (
+        <TeamDraw drawData={drawData} onReturn={() => setDrawData(null)} />
+      )}
     </div>
   );
 };
