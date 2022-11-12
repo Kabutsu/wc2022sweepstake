@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import io from 'socket.io-client';
 
 type TUser = {
@@ -14,7 +14,7 @@ const Home = () => {
 
   const [name, setName] = useState('');
   const [users, setUsers] = useState<Array<string>>([]);
-  const [userId, setUserId] = useState<string>();
+  const [userId, setUserId] = useState('');
   const [isLeader, setIsLeader] = useState(false);
 
   const getData = () => {
@@ -22,6 +22,12 @@ const Home = () => {
       .then((res) => res.json())
       .then((data) => setMessage(data.message));
   };
+
+  const updateLeader = useCallback((id?: string) => {
+    console.log(`id:= ${id}`);
+    console.log(`userId:= ${userId}`);
+    setIsLeader(!id || id === userId);
+  }, [userId]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -32,25 +38,29 @@ const Home = () => {
       setIsConnected(false);
     });
 
-    socket.on('leader', (id?: string) => {
-      setIsLeader(!id || id === userId);
+    socket.on('makeLeader', () => {
+      setIsLeader(true);
+    });
+
+    socket.on('askLeader', (leaderId: string) => {
+      socket.emit('checkLeader', leaderId);
     });
 
     socket.on('loaded', (usersOnServer: Array<TUser>) => {
       setUsers(usersOnServer.map(({ name }) => name));
     });
 
-    socket.on('joined', (usersOnServer: Array<TUser>) => {
-      setUsers(usersOnServer.map(({ name }) => name));
-      //setUserId(id);
+    socket.on('joined', (id: string) => {
+      setUserId(id);
     });
 
     return () => {
       socket.off('connect');
       socket.off('disconnect');
-      // socket.off('loaded');
-      // socket.off('joined');
-      socket.off('leader');
+      socket.off('makeLeader');
+      socket.off('askLeader');
+      socket.off('loaded');
+      socket.off('joined');
     };
   }, []);
 
