@@ -1,0 +1,86 @@
+@import '../../styles/base.scss';
+
+.p-player-info__section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    & > :not(span) {
+        padding-left: 10px;
+    }
+
+    & > * {
+        margin-bottom: 15px;
+    }
+}
+
+.p-player-info__input {
+    display: flex;
+    flex-direction: column;
+
+    &-balance {
+        gap: 7.5px;
+        margin-top: 10px;
+        margin-left: 7.5px;
+    }
+
+    &-tooltip {
+        position: absolute;
+    }
+}
+
+.p-player-info__balance {
+    display: flex;
+    margin: 5px 0;
+
+    &-label {
+        margin: auto 0 auto 24px;
+        text-align: left;
+        font-size: 18px;
+    }
+}
+
+.p-player-info__summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    .o-summary__players {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        max-height: 300px;
+        gap: 20px 120px;
+
+        &-name {
+            display: flex;
+            flex-basis: calc(25% - 40px);
+            flex-direction: column;
+            position: relative;
+            text-align: left;
+
+            &::before {
+                position: absolute;
+                content: '🏅';
+                height: 25px;
+                width: 25px;
+                font-size: 20px;
+                left: -35px;
+            }
+
+            & span {
+                font-weight: 500;
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+        }
+    }
+
+    button.p-player-info__summary {
+        display: flex;
+        margin-left: auto;
+    }
+}

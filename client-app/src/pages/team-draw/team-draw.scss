@@ -1,0 +1,19 @@
+@import '../../styles/base.scss';
+
+.p-team-draw {
+    padding-bottom: 50px;
+}
+
+.p-team-draw__info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 40px;
+}
+
+.p-team-draw__return {
+    display: block;
+    text-align: right;
+    margin-top: 20px;
+    margin-left: auto;
+}

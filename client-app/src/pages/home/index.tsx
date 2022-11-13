@@ -1,33 +1,34 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
-type TUser = {
-  id: string;
-  name: string;
-}
+import { TUser } from '../../types/web-server';
+import PlayerInfo, { TDrawData } from '../player-info';
+
+import { drawTeams } from 'src/services/draw-logic';
+
+import './home.scss';
+import { TPlayerDraw } from 'src/types/general';
+import TeamDraw from '../team-draw';
+
+enum Stage {
+  Info,
+  Draw,
+};
+
+type TProps = {};
 
 const socket = io('http://localhost:3001');
 
-const Home = () => {
+const Home = ({}: TProps) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [message, setMessage] = useState('No message set');
 
   const [name, setName] = useState('');
-  const [users, setUsers] = useState<Array<string>>([]);
+  const [users, setUsers] = useState<Array<TUser>>([]);
   const [userId, setUserId] = useState('');
   const [isLeader, setIsLeader] = useState(false);
 
-  const getData = () => {
-    fetch('/api')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message));
-  };
-
-  const updateLeader = useCallback((id?: string) => {
-    console.log(`id:= ${id}`);
-    console.log(`userId:= ${userId}`);
-    setIsLeader(!id || id === userId);
-  }, [userId]);
+  const [currentStage, setCurrentStage] = useState<Stage>(Stage.Info);
+  const [drawData, setDrawData] = useState<Array<TPlayerDraw>>(null);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -47,11 +48,15 @@ const Home = () => {
     });
 
     socket.on('loaded', (usersOnServer: Array<TUser>) => {
-      setUsers(usersOnServer.map(({ name }) => name));
+      setUsers(usersOnServer);
     });
 
     socket.on('joined', (id: string) => {
       setUserId(id);
+    });
+
+    socket.on('teamsDrawn', (data: Array<TPlayerDraw>) => {
+      setDrawData(data);
     });
 
     return () => {
@@ -64,46 +69,26 @@ const Home = () => {
     };
   }, []);
 
-  const sendJoinRequest = () => {
-    if (!!name) {
-      socket.emit('join', name);
-      setName('');
-    } else {
-      alert('Name cannot be empty');
-    }
-  };
+  const submitDrawData = (data: TDrawData) => {
+    const teamDraw = drawTeams(data);
+    setDrawData(teamDraw);
+
+    socket.emit('drawTeams', teamDraw);
+  }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button onClick={getData}>Fetch data</button>
-        <p>{message}</p>
-        <br />
-        <p>{`${isConnected ? 'Connected to' : 'Disconnected from'} websocket server`}</p>
-        {isLeader && (
-          <p>You are the leader!</p>
-        )}
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        <button onClick={sendJoinRequest}>Join</button>
-        {users.length && (
-          <ul>
-            {users.map(user => (
-              <li>{user}</li>
-            ))}
-          </ul>
-        )}
-      </header>
+    <div className="p-home">
+      {!drawData ? (
+        <PlayerInfo
+          socket={socket}
+          connected={!!userId}
+          isLeader={isLeader}
+          players={users}
+          setPlayerData={submitDrawData}
+        />
+      ) : (
+        <TeamDraw drawData={drawData} onReturn={() => setDrawData(null)} />
+      )}
     </div>
   );
 };

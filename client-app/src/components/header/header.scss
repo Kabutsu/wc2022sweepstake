@@ -1,0 +1,40 @@
+@import '../../styles/base.scss';
+
+.c-header__container {
+    display: flex;
+    width: 100%;
+    height: calc(10vh + 14px);
+    padding-bottom: 7px;
+    background: linear-gradient(90deg,#feb807 0,#e98455 15%,#d359a3 30%,#be2ff2 45%,#861cff 60%,#524fee 75%,#2a93de 90%,#04c7e5 100%);
+}
+
+.c-header {
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    padding: 7px 0;
+    margin: 0 auto;
+    background: $dark-1;
+
+    &__title {
+        display: flex;
+        align-items: center;
+        height: 10vh;
+        max-width: 75vw;
+        margin: 0 auto;
+
+        &-img {
+            width: 10vh;
+            height: 10vh;
+        }
+    
+        &-text {
+            font-size: 30px;
+            color: $white;
+        }
+
+        & > * {
+            gap: 10px;
+        }
+    }
+}
