@@ -1,7 +1,6 @@
 {
   "name": "wc2022sweepstakes",
   "version": "0.1.0",
-  "private": true,
   "proxy": "http://localhost:3001",
   "scripts": {
     "start": "react-scripts start",
