@@ -37,6 +37,8 @@
   },
   "devDependencies": {
     "@types/redux-form": "^8.3.5",
+    "postcss": "^8.4.19",
+    "postcss-selector-parser": "^6.0.10",
     "redux-form": "^8.3.8"
   }
 }
