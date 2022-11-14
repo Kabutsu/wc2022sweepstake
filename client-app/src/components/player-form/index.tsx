@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
 import { Socket } from 'socket.io-client';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 import { TDefaultObject } from 'src/types/general';
 import Button from '../button';
@@ -9,7 +8,7 @@ import InputText from '../input-text';
 import './player-form.scss';
 
 type IProps = {
-    socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+    socket: Socket;
 };
 
 const SignUpForm = ({ socket }: IProps) => {

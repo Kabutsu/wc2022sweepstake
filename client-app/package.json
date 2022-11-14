@@ -1,7 +1,6 @@
 {
   "name": "wc2022sweepstakes",
   "version": "0.1.0",
-  "private": true,
   "proxy": "http://localhost:3001",
   "scripts": {
     "start": "react-scripts start",
@@ -38,6 +37,8 @@
   },
   "devDependencies": {
     "@types/redux-form": "^8.3.5",
+    "postcss": "^8.4.19",
+    "postcss-selector-parser": "^6.0.10",
     "redux-form": "^8.3.8"
   }
 }
