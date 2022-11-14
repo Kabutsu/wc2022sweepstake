@@ -20,7 +20,7 @@ steps:
   inputs:
     command: 'custom'
     workingDir: 'client-app'
-    customCommand: 'build'
+    customCommand: 'run build'
 
 - task: Npm@1
   name: "publish"
