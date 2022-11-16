@@ -1,0 +1,29 @@
+trigger:
+- main
+- feature/*
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Npm@1
+  name: "npmInstall"
+  inputs:
+    command: 'custom'
+    customCommand: 'install --legacy-peer-deps'
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+- task: Npm@1
+  name: "npmBuild"
+  inputs:
+    command: 'custom'
+    customCommand: 'run build'
+- task: PublishBuildArtifacts@1
+  name: "Publish"
+  inputs:
+    PathtoPublish: 'build'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+    

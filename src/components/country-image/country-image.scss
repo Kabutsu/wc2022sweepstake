@@ -10,11 +10,20 @@
     opacity: 0;
     transition: opacity 1.5s;
 
+    @media($mobile) {
+        width: 40%;
+    }
+
     & > img {
         border-radius: 50%;
         width: 60px;
         height: 60px;
         border: 1px solid $dark-2;
+
+        @media($mobile) {
+            width: 40px;
+            height: 40px;
+        }
     }
 
     & > span {
@@ -22,6 +31,10 @@
         margin-bottom: 5px;
         font-size: 20px;
         font-weight: 500;
+
+        @media($mobile) {
+            font-size: 14px;
+        }
     }
 
     &.is-visible {

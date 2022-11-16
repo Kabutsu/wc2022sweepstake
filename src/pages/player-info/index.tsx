@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import Button from 'src/components/button';
 import { RadioGroup, RadioOptionType } from 'src/components/input-radio';
 import InputToggle from 'src/components/input-toggle';
@@ -40,7 +39,7 @@ const balanceOptions: Array<RadioOptionType> = [{
 }];
 
 type IProps = {
-    socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+    socket: Socket;
     connected: boolean;
     isLeader: boolean;
     players: Array<TUser>;

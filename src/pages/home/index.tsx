@@ -17,7 +17,7 @@ enum Stage {
 
 type TProps = {};
 
-const socket = io('http://localhost:3001');
+const socket = io('https://wc2022sweepstake-node.azurewebsites.net/');
 
 const Home = ({}: TProps) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
