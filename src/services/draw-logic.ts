@@ -49,8 +49,97 @@ export const canDraw = (balanceTeams: boolean, balanceDraw: boolean, activeGroup
     return (balanceDraw && typeof activeGroup !== 'undefined') || (!balanceDraw && !!bigPot.length);
 }
 
+export const fullBalancedDraw = ({ playerData, balanceTeams, oneTeamEach, allowTeamsFromSameGroup }: TDrawData) => {
+    const teams1 = countries.filter(c => c.id <= 4);
+    const teams2 = countries.filter(c => c.id > 4 && c.id <= 8);
+    const teams3 = countries.filter(c => c.id > 8 && c.id <= 12);
+    const teams4 = countries.filter(c => c.id > 12 && c.id <= 16);
+    const teams5 = countries.filter(c => c.id > 16 && c.id <= 24);
+    const teams6 = countries.filter(c => c.id > 24 && c.id <= 32);
+
+    const players = shuffleCopy(playerData);
+
+    const playersA = players.slice(0, 4);
+    const playersB = players.slice(4);
+
+    let draw: Array<TPlayerDraw>;
+    do {
+        draw = [];
+
+        const teams1Shuffle = shuffleCopy(teams1);
+        const teams2Shuffle = shuffleCopy(teams2);
+        const teams3Shuffle = shuffleCopy(teams3);
+        const teams4Shuffle = shuffleCopy(teams4);
+        const teams5Shuffle = shuffleCopy(teams5);
+        const teams6Shuffle = shuffleCopy(teams6);
+
+        playersA.forEach((player, index) => {
+            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
+                const d: TPlayerDraw = playerIndex >= 0
+                    ? draw[playerIndex]
+                    : { playerData: player, countries: [] };
+
+                d.countries.push(teams1Shuffle.pop());
+
+                if (playerIndex < 0) {
+                    draw.push(d);
+                }
+        });
+
+        playersB.forEach((player, index) => {
+            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
+                const d: TPlayerDraw = playerIndex >= 0
+                    ? draw[playerIndex]
+                    : { playerData: player, countries: [] };
+
+                d.countries.push(teams2Shuffle.pop());
+
+                if (playerIndex < 0) {
+                    draw.push(d);
+                }
+        });
+
+        playersB.forEach((player, index) => {
+            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
+                const d: TPlayerDraw = draw[playerIndex];
+
+                d.countries.push(teams3Shuffle.pop());
+        });
+
+        playersA.forEach((player, index) => {
+            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
+                const d: TPlayerDraw = draw[playerIndex];
+
+                d.countries.push(teams4Shuffle.pop());
+        });
+
+        playersA.forEach((player, index) => {
+            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
+                const d: TPlayerDraw = draw[playerIndex];
+
+                d.countries.push(teams5Shuffle.pop());
+                d.countries.push(teams6Shuffle.pop());
+        });
+
+        playersB.forEach((player, index) => {
+            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
+                const d: TPlayerDraw = draw[playerIndex];
+
+                d.countries.push(teams5Shuffle.pop());
+                d.countries.push(teams6Shuffle.pop());
+        });
+
+    } while(!validateDraw(draw, allowTeamsFromSameGroup));
+
+    return draw;
+}
+
 export const drawTeams = ({ playerData, balanceDraw, balanceTeams, oneTeamEach, allowTeamsFromSameGroup }: TDrawData) => {
     const fullyBalanced = balanceDraw === Balance.Full;
+
+    if (fullyBalanced) {
+        return fullBalancedDraw({ playerData, balanceDraw, balanceTeams, oneTeamEach, allowTeamsFromSameGroup });
+    }
 
     const teams1 = countries.filter(c => c.groupSeed === 1);
     const teams2 = countries.filter(c => c.groupSeed === 2);
