@@ -7,7 +7,7 @@ pool:
 
 steps:
 - task: Npm@1
-  name: "install"
+  name: "npmInstall"
   inputs:
     command: 'custom'
     workingDir: 'client-app'
@@ -17,13 +17,13 @@ steps:
 # https://aka.ms/yaml
 
 - task: Npm@1
-  name: "build"
+  name: "npmBuild"
   inputs:
     command: 'custom'
     workingDir: 'client-app'
     customCommand: 'run build'
 - task: PublishBuildArtifacts@1
-  name: "publish"
+  name: "Publish"
   inputs:
     PathtoPublish: 'client-app/build'
     ArtifactName: 'drop'
