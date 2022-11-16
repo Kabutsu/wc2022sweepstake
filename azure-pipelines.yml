@@ -3,38 +3,29 @@ trigger:
 - feature/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
+- task: Npm@1
+  name: "install"
   inputs:
-    versionSpec: '16.x'
-  displayName: 'Install Node.js'
+    command: 'custom'
+    workingDir: 'client-app'
+    customCommand: 'install --legacy-peer-deps'
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
 
-- script: |
-    npm install
-  displayName: 'npm install'
-
-- script: |
-    npm run build
-  displayName: 'npm build'
-
-- task: CopyFiles@2
+- task: Npm@1
+  name: "build"
   inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: '*.tgz' 
-    targetFolder: $(Build.ArtifactStagingDirectory)/npm
-  displayName: 'Copy npm package'
-
-- task: CopyFiles@2
+    command: 'custom'
+    workingDir: 'client-app'
+    customCommand: 'run build'
+- task: PublishBuildArtifacts@1
+  name: "publish"
   inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: 'package.json' 
-    targetFolder: $(Build.ArtifactStagingDirectory)/npm
-  displayName: 'Copy package.json'   
-
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)/npm'
-    artifactName: npm
-  displayName: 'Publish npm artifact'
+    PathtoPublish: 'client-app/build'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+    
