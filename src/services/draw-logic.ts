@@ -58,9 +58,7 @@ export const fullBalancedDraw = ({ playerData, balanceTeams, oneTeamEach, allowT
     const teams6 = countries.filter(c => c.id > 24 && c.id <= 32);
 
     const players = shuffleCopy(playerData);
-
-    const playersA = players.slice(0, 4);
-    const playersB = players.slice(4);
+    const bigMod = (players.length * 2);
 
     let draw: Array<TPlayerDraw>;
     do {
@@ -73,62 +71,44 @@ export const fullBalancedDraw = ({ playerData, balanceTeams, oneTeamEach, allowT
         const teams5Shuffle = shuffleCopy(teams5);
         const teams6Shuffle = shuffleCopy(teams6);
 
-        playersA.forEach((player, index) => {
+        const bigPot = [
+            ...teams1Shuffle,
+            ...teams2Shuffle,
+            ...teams3Shuffle,
+            ...teams4Shuffle,
+            ...teams5Shuffle,
+            ...teams6Shuffle,
+        ];
+
+        console.log(`bigPot.length:= ${bigPot.length}`);
+
+        for (let i = 0; i < 32; i++) {
+            const mod = i % bigMod;
+            const index = mod < players.length
+                ? mod
+                : (mod - (1 + (2 * (mod % players.length))));
+
+            console.log(`i:= ${i}`);
+            console.log(`index:= ${index}`);
+
+            const player = players[index];
+
             const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
-                const d: TPlayerDraw = playerIndex >= 0
-                    ? draw[playerIndex]
-                    : { playerData: player, countries: [] };
 
-                d.countries.push(teams1Shuffle.pop());
+            const d: TPlayerDraw = playerIndex >= 0
+                ? draw[playerIndex]
+                : { playerData: player, countries: [] };
 
-                if (playerIndex < 0) {
-                    draw.push(d);
-                }
-        });
+            const country = bigPot.pop();
 
-        playersB.forEach((player, index) => {
-            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
-                const d: TPlayerDraw = playerIndex >= 0
-                    ? draw[playerIndex]
-                    : { playerData: player, countries: [] };
+            console.log(`${player.name} given ${country.name}`);
 
-                d.countries.push(teams2Shuffle.pop());
+            d.countries.push(country);
 
-                if (playerIndex < 0) {
-                    draw.push(d);
-                }
-        });
-
-        playersB.forEach((player, index) => {
-            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
-                const d: TPlayerDraw = draw[playerIndex];
-
-                d.countries.push(teams3Shuffle.pop());
-        });
-
-        playersA.forEach((player, index) => {
-            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
-                const d: TPlayerDraw = draw[playerIndex];
-
-                d.countries.push(teams4Shuffle.pop());
-        });
-
-        playersA.forEach((player, index) => {
-            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
-                const d: TPlayerDraw = draw[playerIndex];
-
-                d.countries.push(teams5Shuffle.pop());
-                d.countries.push(teams6Shuffle.pop());
-        });
-
-        playersB.forEach((player, index) => {
-            const playerIndex = draw.findIndex(x => x.playerData.id === player.id);
-                const d: TPlayerDraw = draw[playerIndex];
-
-                d.countries.push(teams5Shuffle.pop());
-                d.countries.push(teams6Shuffle.pop());
-        });
-
+            if (playerIndex < 0) {
+                draw.push(d);
+            }
+        }
     } while(!validateDraw(draw, allowTeamsFromSameGroup));
 
     return draw;
